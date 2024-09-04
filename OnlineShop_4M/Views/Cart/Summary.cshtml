@@ -1,0 +1,58 @@
+﻿@using OnlineShop_4M_Utility;
+
+@model OnlineShop_4M_Models.ViewModels.ProductUserViewModel
+<h1>Summary</h1>
+
+<form asp-action="SummaryPost">
+
+    <h3>Данные заказчика</h3>
+
+    <p>
+        <label>Имя</label>
+        <input type="text" class="form-control" asp-for="@Model.ApplicationUser.FullName" />
+    </p>
+
+    <p>
+        <label>Телефон</label>
+        <input type="text" class="form-control" asp-for="@Model.ApplicationUser.PhoneNumber" />
+    </p>
+    
+
+    <p>
+        <label>Email</label>
+        <input type="text" class="form-control" asp-for="@Model.ApplicationUser.Email" />
+    </p>
+    <h3>Адрес</h3>
+    <p>
+        <label>Город</label>
+        <input type="text" class="form-control" asp-for="@Model.ApplicationUser.City" />
+    </p>
+
+    <h3>Данные заказа</h3>
+    @{
+        var orderTotal = 0.0;
+    }
+    @for (var i = 0; i < Model.ProductList.Count; i++)
+    {
+        <input type="hidden" asp-for="@Model.ProductList[i].Id" />
+        <input type="hidden" asp-for="@Model.ProductList[i].Name" />
+        <input type="hidden" asp-for="@Model.ProductList[i].Price" />
+        <input type="hidden" asp-for="@Model.ProductList[i].TempCount" />
+
+        <p>
+            <h5>Название продукта: @Model.ProductList[i].Name</h5>
+            <small>Цена продукта: @Model.ProductList[i].Price</small>
+            <small>Кол-во продукта: @Model.ProductList[i].TempCount</small>
+            <small>Итого: @(Model.ProductList[i].Price * @Model.ProductList[i].TempCount)</small>
+        </p>
+        orderTotal += Model.ProductList[i].Price * Model.ProductList[i].TempCount;
+    }
+    <h3>К оплаье: @orderTotal</h3>
+    <p>
+        <button type="submit" class="btn form-control btn-promary">Подтвердить запрос</button>
+    </p>
+    @if(User.IsInRole(PathManager.AdminRole))
+    {
+        <button type="submit" class="btn form-control btn-info">Подтвердить заказ(Для админа)</button>
+    }
+</form>

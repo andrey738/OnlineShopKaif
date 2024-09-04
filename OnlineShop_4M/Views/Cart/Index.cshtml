@@ -1,0 +1,74 @@
+﻿@using OnlineShop_4M_Utility
+@using OnlineShop_4M_Models
+
+@model List<Product>
+
+<h1>Корзина покупок</h1>
+
+@if (Model.Count() > 0)
+{
+    <form method="post">
+
+        <p>
+            <a class="btn btn-primary" asp-action="Index"
+               asp-controller="Home">Продолжить покупки</a>
+            <a class="btn-danger" asp-action="Clear"
+           >очистить карзину</a>
+        </p>
+
+        <p> Детализация товаров </p>
+
+        <p> Цена </p>
+
+        @{
+            double totalOrder = 0;
+        }
+
+        @for (int i = 0;i < Model.Count(); i++)
+        {
+            <input hidden asp-for="@Model[i].Id"/>
+            <p>
+                <img src="@PathManager.ImagePath@Model[i].Image" width="200" class="rounded" />
+            </p>
+
+            <p>Название продукта: @Model[i].Name</p>
+
+            <p>Описание продукта: @Model[i].ShortDescription</p>
+
+            <p>Цена продукта: @Model[i].Price</p>
+
+            <p> Кол-во товара
+                <input type = "text" asp-for="@Model[i].TempCount" class="form-control"/>
+            </p>
+            
+            <p>Цена за все продукты: @(Model[i].Price * Model[i].TempCount)</p>
+
+            <p>
+                <a asp-action="Remove" asp-route-Id="@Model[i].Id"
+                   class="btn btn-danger">Удалить продукт</a>
+            </p>
+
+             totalOrder += Model[i].Price * Model[i].TempCount;
+            }
+
+
+        <h2>Стоимость покупки: @string.Format("{0:c}", totalOrder)</h2>
+
+
+        <p> 
+            <input type="submit" asp-action="UpdateCart"
+                   formmethod="post" name="Update"
+                   class="btn btn-info form-control"
+                   value="обновить корзину"/>
+
+            <button asp-action="Summary" type="submit" class="btn btn-success from-control">
+                Продолжить
+            </button>
+        </p>
+
+    </form>
+}
+else
+{
+    <p>Пожалуйста, добавьте товар в корзину. Тут пусто :(</p>
+}
